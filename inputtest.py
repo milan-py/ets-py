@@ -13,4 +13,4 @@ while 1:
         if event.type == JOYBUTTONUP:
             print(f"Button: {event.button}")
         if event.type == JOYAXISMOTION:
-            print(f"axis: {event.axis} value: {event.value}")
+            print(f"axis: {event.axis} value: {event.value} id: {event.instance_id}")
