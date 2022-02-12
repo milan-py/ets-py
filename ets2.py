@@ -2,7 +2,6 @@ import pygame
 from pygame.locals import *
 
 import vgamepad as vg
-import keyboard
 
 from PIL import Image, ImageGrab
 from time import sleep
