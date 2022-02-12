@@ -8,22 +8,26 @@ from time import sleep
 
 import winsound
 
-gamepad = vg.VX360Gamepad()
 
 
-pygame.joystick.init()
+
+
 pygame.init()
 
 joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
 
 
+gamepad = vg.VX360Gamepad()
 
 RIGHT = 7
 LEFT = 6
 TOGGLEAUTO = 2
 STEERINGAXIS = 0
 
-value = 0
+
+
+
+controller_value = 0
 previousvalue = 0
 auto = False
 lanes = [85, 98]
@@ -33,6 +37,7 @@ correction = lanes[0]
 previous_auto_toggle = False
 
 warning_given = False
+
 
 while 1:
 	screenshot = ImageGrab.grab(bbox = (2150, 1100, 2350, 1200))
@@ -45,11 +50,12 @@ while 1:
 	
 	for event in pygame.event.get():
 		if event.type == JOYAXISMOTION and event.axis == STEERINGAXIS:
-			value = event.value
-			if(previousvalue < -0.5 and value == 1):
-				value = -value
+			controller_value = event.value
+			print(event.instance_id)
+			if(previousvalue < -0.5 and controller_value == 1):
+				controller_value = -controller_value
 			
-			previousvalue = value
+			previousvalue = controller_value
 		elif event.type == JOYBUTTONUP:
 			if event.button == RIGHT:
 				lane = 0
@@ -59,6 +65,7 @@ while 1:
 				if not previous_auto_toggle:
 					if auto:
 						auto = False
+						print("Debug0")
 						winsound.PlaySound("aus.wav", winsound.SND_ASYNC)
 
 					else:
@@ -82,12 +89,13 @@ while 1:
 		if correction > lanes[1]-1: correction = lanes[1]
 		else: correction += 0.25
 
-	print(f"correction {correction}, lane {lane}")
+	# print(f"correction {correction}, lane {lane}")
 
 	if auto:
-		if(abs(value) > 0.1):
+		if(abs(controller_value) > 0.1):
 			auto = False
 			winsound.PlaySound("aus.wav", winsound.SND_ASYNC)
+			print("Debug1")
 		if i != 149:
 			i = (i - correction)/200
 			gamepad.left_joystick_float(x_value_float = i, y_value_float = 0.0)
@@ -98,9 +106,9 @@ while 1:
 				winsound.PlaySound("fehler.wav", winsound.SND_ASYNC)
 				warning_given = True
 				
-			gamepad.left_joystick_float(x_value_float = value*value if value > 0 else -(value*value), y_value_float = 0.0)
+			gamepad.left_joystick_float(x_value_float = controller_value*controller_value if controller_value > 0 else -(controller_value*controller_value), y_value_float = 0.0)
 			gamepad.update()
 	else:
-		gamepad.left_joystick_float(x_value_float = value*value if value > 0 else -(value*value), y_value_float = 0.0)
+		gamepad.left_joystick_float(x_value_float = controller_value*controller_value if controller_value > 0 else -(controller_value*controller_value), y_value_float = 0.0)
 		gamepad.update()
 		lane = 0
