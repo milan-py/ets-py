@@ -51,10 +51,10 @@ while 1:
 	for event in pygame.event.get():
 		if event.type == JOYAXISMOTION and event.axis == STEERINGAXIS:
 			controller_value = event.value
-			print(event.instance_id)
-			if(previousvalue < -0.5 and controller_value == 1):
-				controller_value = -controller_value
-			
+			if controller_value < -1: 
+				controller_value = -1
+			print(f"value: {controller_value}")
+
 			previousvalue = controller_value
 		elif event.type == JOYBUTTONUP:
 			if event.button == RIGHT:
@@ -65,7 +65,6 @@ while 1:
 				if not previous_auto_toggle:
 					if auto:
 						auto = False
-						print("Debug0")
 						winsound.PlaySound("aus.wav", winsound.SND_ASYNC)
 
 					else:
@@ -95,7 +94,6 @@ while 1:
 		if(abs(controller_value) > 0.1):
 			auto = False
 			winsound.PlaySound("aus.wav", winsound.SND_ASYNC)
-			print("Debug1")
 		if i != 149:
 			i = (i - correction)/200
 			gamepad.left_joystick_float(x_value_float = i, y_value_float = 0.0)
